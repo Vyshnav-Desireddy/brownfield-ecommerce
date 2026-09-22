@@ -1,0 +1,7 @@
+<div class="container mt-4">
+  @if (authService.currentUser$ | async; as user) {
+    <h2>Welcome, {{ user.firstName }} {{ user.lastName }}!</h2>
+    <p>This is your Members-only page.</p>
+    <a routerLink="/order-history" class="btn btn-primary">View Order History</a>
+  }
+</div>

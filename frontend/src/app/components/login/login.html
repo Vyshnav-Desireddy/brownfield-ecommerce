@@ -1,0 +1,48 @@
+<div class="container mt-4" style="max-width: 420px;">
+  <ul class="nav nav-tabs mb-3">
+    <li class="nav-item">
+      <button class="nav-link" [class.active]="mode() === 'login'" (click)="switchMode('login')">Login</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" [class.active]="mode() === 'register'" (click)="switchMode('register')">Register</button>
+    </li>
+  </ul>
+
+  @if (errorMessage()) {
+    <div class="alert alert-danger">{{ errorMessage() }}</div>
+  }
+
+  @if (mode() === 'login') {
+    <form [formGroup]="loginForm" (ngSubmit)="submitLogin()">
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-control" formControlName="email" />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-control" formControlName="password" />
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Login</button>
+    </form>
+  } @else {
+    <form [formGroup]="registerForm" (ngSubmit)="submitRegister()">
+      <div class="mb-3">
+        <label class="form-label">First Name</label>
+        <input type="text" class="form-control" formControlName="firstName" />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Last Name</label>
+        <input type="text" class="form-control" formControlName="lastName" />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-control" formControlName="email" />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-control" formControlName="password" />
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Register</button>
+    </form>
+  }
+</div>

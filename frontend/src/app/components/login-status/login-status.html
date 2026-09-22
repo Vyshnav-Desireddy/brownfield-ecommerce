@@ -1,0 +1,10 @@
+@if (authService.currentUser$ | async; as user) {
+  <div class="d-flex align-items-center gap-2">
+    <span class="text-light">Hi, {{ user.firstName }}</span>
+    <a routerLink="/members" class="btn btn-outline-light btn-sm">Members</a>
+    <a routerLink="/order-history" class="btn btn-outline-light btn-sm">Orders</a>
+    <button class="btn btn-outline-light btn-sm" (click)="logout()">Logout</button>
+  </div>
+} @else {
+  <a routerLink="/login" class="btn btn-outline-light btn-sm">Login</a>
+}

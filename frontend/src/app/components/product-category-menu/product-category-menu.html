@@ -1,0 +1,14 @@
+<ul class="nav flex-column">
+  <li class="nav-item">
+    <a class="nav-link" routerLink="/products" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+      All Products
+    </a>
+  </li>
+  @for (category of productCategories(); track category.id) {
+    <li class="nav-item">
+      <a class="nav-link" [routerLink]="['/category', category.id]" routerLinkActive="active">
+        {{ category.categoryName }}
+      </a>
+    </li>
+  }
+</ul>

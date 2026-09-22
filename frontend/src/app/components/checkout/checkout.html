@@ -1,0 +1,215 @@
+<div class="container mt-4">
+  <h2>Checkout</h2>
+
+  @if (orderTrackingNumber()) {
+    <div class="alert alert-success">
+      <h4>Thank you for your order!</h4>
+      <p>Your order tracking number is: <strong>{{ orderTrackingNumber() }}</strong></p>
+    </div>
+  } @else {
+    @if (submitError()) {
+      <div class="alert alert-danger">{{ submitError() }}</div>
+    }
+
+    <form [formGroup]="checkoutFormGroup" (ngSubmit)="onSubmit()">
+      <div class="card mb-3">
+        <div class="card-header">Customer</div>
+        <div class="card-body row g-3" formGroupName="customer">
+          <div class="col-md-4">
+            <label class="form-label">First Name</label>
+            <input class="form-control" [class.is-invalid]="isInvalid('customer.firstName')" formControlName="firstName" />
+            @if (isInvalid('customer.firstName')) {
+              <div class="invalid-feedback">First name is required.</div>
+            }
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Last Name</label>
+            <input class="form-control" [class.is-invalid]="isInvalid('customer.lastName')" formControlName="lastName" />
+            @if (isInvalid('customer.lastName')) {
+              <div class="invalid-feedback">Last name is required.</div>
+            }
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Email</label>
+            <input class="form-control" [class.is-invalid]="isInvalid('customer.email')" formControlName="email" />
+            @if (isInvalid('customer.email')) {
+              <div class="invalid-feedback">A valid email is required.</div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="card mb-3">
+        <div class="card-header">Shipping Address</div>
+        <div class="card-body row g-3" formGroupName="shippingAddress">
+          <div class="col-md-6">
+            <label class="form-label">Street</label>
+            <input class="form-control" [class.is-invalid]="isInvalid('shippingAddress.street')" formControlName="street" />
+            @if (isInvalid('shippingAddress.street')) {
+              <div class="invalid-feedback">Street is required.</div>
+            }
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">City</label>
+            <input class="form-control" [class.is-invalid]="isInvalid('shippingAddress.city')" formControlName="city" />
+            @if (isInvalid('shippingAddress.city')) {
+              <div class="invalid-feedback">City is required.</div>
+            }
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Country</label>
+            <select class="form-select" [class.is-invalid]="isInvalid('shippingAddress.country')" formControlName="country"
+                    (change)="onCountryChange('shippingAddress', $any($event.target).selectedOptions[0].dataset['code'])">
+              <option value="">-- Select --</option>
+              @for (country of countries(); track country.id) {
+                <option [value]="country.name" [attr.data-code]="country.code">{{ country.name }}</option>
+              }
+            </select>
+            @if (isInvalid('shippingAddress.country')) {
+              <div class="invalid-feedback">Country is required.</div>
+            }
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">State</label>
+            <select class="form-select" [class.is-invalid]="isInvalid('shippingAddress.state')" formControlName="state">
+              <option value="">-- Select --</option>
+              @for (state of shippingAddressStates(); track state.id) {
+                <option [value]="state.name">{{ state.name }}</option>
+              }
+            </select>
+            @if (isInvalid('shippingAddress.state')) {
+              <div class="invalid-feedback">State is required.</div>
+            }
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Zip Code</label>
+            <input class="form-control" [class.is-invalid]="isInvalid('shippingAddress.zipCode')" formControlName="zipCode" />
+            @if (isInvalid('shippingAddress.zipCode')) {
+              <div class="invalid-feedback">Zip code is required.</div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="form-check mb-3">
+        <input type="checkbox" class="form-check-input" id="sameAsShipping"
+               (change)="copyShippingToBilling($any($event.target).checked)" />
+        <label class="form-check-label" for="sameAsShipping">Billing address same as shipping</label>
+      </div>
+
+      <div class="card mb-3">
+        <div class="card-header">Billing Address</div>
+        <div class="card-body row g-3" formGroupName="billingAddress">
+          <div class="col-md-6">
+            <label class="form-label">Street</label>
+            <input class="form-control" [class.is-invalid]="isInvalid('billingAddress.street')" formControlName="street" />
+            @if (isInvalid('billingAddress.street')) {
+              <div class="invalid-feedback">Street is required.</div>
+            }
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">City</label>
+            <input class="form-control" [class.is-invalid]="isInvalid('billingAddress.city')" formControlName="city" />
+            @if (isInvalid('billingAddress.city')) {
+              <div class="invalid-feedback">City is required.</div>
+            }
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Country</label>
+            <select class="form-select" [class.is-invalid]="isInvalid('billingAddress.country')" formControlName="country"
+                    (change)="onCountryChange('billingAddress', $any($event.target).selectedOptions[0].dataset['code'])">
+              <option value="">-- Select --</option>
+              @for (country of countries(); track country.id) {
+                <option [value]="country.name" [attr.data-code]="country.code">{{ country.name }}</option>
+              }
+            </select>
+            @if (isInvalid('billingAddress.country')) {
+              <div class="invalid-feedback">Country is required.</div>
+            }
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">State</label>
+            <select class="form-select" [class.is-invalid]="isInvalid('billingAddress.state')" formControlName="state">
+              <option value="">-- Select --</option>
+              @for (state of billingAddressStates(); track state.id) {
+                <option [value]="state.name">{{ state.name }}</option>
+              }
+            </select>
+            @if (isInvalid('billingAddress.state')) {
+              <div class="invalid-feedback">State is required.</div>
+            }
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Zip Code</label>
+            <input class="form-control" [class.is-invalid]="isInvalid('billingAddress.zipCode')" formControlName="zipCode" />
+            @if (isInvalid('billingAddress.zipCode')) {
+              <div class="invalid-feedback">Zip code is required.</div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="card mb-3">
+        <div class="card-header">Credit Card</div>
+        <div class="card-body row g-3" formGroupName="creditCard">
+          <div class="col-md-4">
+            <label class="form-label">Card Type</label>
+            <select class="form-select" formControlName="cardType">
+              <option value="visa">Visa</option>
+              <option value="mastercard">MasterCard</option>
+            </select>
+          </div>
+          <div class="col-md-8">
+            <label class="form-label">Name on Card</label>
+            <input class="form-control" [class.is-invalid]="isInvalid('creditCard.nameOnCard')" formControlName="nameOnCard" />
+            @if (isInvalid('creditCard.nameOnCard')) {
+              <div class="invalid-feedback">Name on card is required.</div>
+            }
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Card Number</label>
+            <input class="form-control" [class.is-invalid]="isInvalid('creditCard.cardNumber')" formControlName="cardNumber" maxlength="16" />
+            @if (isInvalid('creditCard.cardNumber')) {
+              <div class="invalid-feedback">Card number must be exactly 16 digits.</div>
+            }
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Security Code</label>
+            <input class="form-control" [class.is-invalid]="isInvalid('creditCard.securityCode')" formControlName="securityCode" maxlength="3" />
+            @if (isInvalid('creditCard.securityCode')) {
+              <div class="invalid-feedback">Security code must be exactly 3 digits.</div>
+            }
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Expiration</label>
+            <div class="d-flex gap-2">
+              <select class="form-select" [class.is-invalid]="isInvalid('creditCard.expirationMonth')" formControlName="expirationMonth">
+                <option value="">MM</option>
+                @for (m of creditCardMonths; track m) {
+                  <option [value]="m">{{ m }}</option>
+                }
+              </select>
+              <select class="form-select" [class.is-invalid]="isInvalid('creditCard.expirationYear')" formControlName="expirationYear">
+                <option value="">YYYY</option>
+                @for (y of creditCardYears; track y) {
+                  <option [value]="y">{{ y }}</option>
+                }
+              </select>
+            </div>
+            @if (isInvalid('creditCard.expirationMonth') || isInvalid('creditCard.expirationYear')) {
+              <div class="text-danger small mt-1">Expiration month and year are required.</div>
+            }
+          </div>
+          @if (creditCard.errors?.['cardExpired'] && (creditCard.touched || formSubmitted())) {
+            <div class="text-danger">This card has expired.</div>
+          }
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center">
+        <h4>Total: {{ cartService.totalPrice() | currency }} ({{ cartService.totalQuantity() }} items)</h4>
+        <button type="submit" class="btn btn-primary" [disabled]="cartService.totalQuantity() === 0">Place Order</button>
+      </div>
+    </form>
+  }
+</div>
